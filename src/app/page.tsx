@@ -15,6 +15,7 @@ export default function Login() {
   const [logs, setLogs] = useState<any[]>([]) // State to store fetched logs
   const router = useRouter()
 
+  // Simulate login (placeholder for actual login logic)
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault()
     setIsLoading(true)
@@ -41,7 +42,10 @@ export default function Login() {
   return (
     <>
       <div className="container flex h-screen w-screen flex-col items-center justify-center">
+        {/* Navigation Bar */}
         <NavBar isMobile={false} hideButton />
+
+        {/* Login Card */}
         <Card className="w-[380px]">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl">Sign in</CardTitle>
@@ -61,10 +65,7 @@ export default function Login() {
                 <Input id="password" type="password" />
               </div>
               <Button className="w-full mt-4" type="submit" disabled={isLoading}>
-                {isLoading && (
-                  true
-                )}
-                Sign In
+                {isLoading ? 'Loading...' : 'Sign In'}
               </Button>
             </form>
 
@@ -85,7 +86,7 @@ export default function Login() {
           </CardFooter>
         </Card>
 
-        {/* Logs Section */}
+        {/* User Logs Section */}
         <Card className="w-full mt-8 p-4">
           <CardHeader>
             <CardTitle>User Logs</CardTitle>
