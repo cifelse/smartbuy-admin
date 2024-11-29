@@ -1,8 +1,9 @@
-import { createClient } from "@supabase/supabase-js"
+import { createClient } from "@supabase/supabase-js";
 
 // Create a single supabase client for interacting with your database
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY);
 
+// Fetch all categories
 export const getAllCategories = async () => {
     const { data, error } = await supabase
         .from('categories')
@@ -14,8 +15,9 @@ export const getAllCategories = async () => {
     }
 
     return data;
-}
+};
 
+// Fetch all products
 export const getAllProducts = async () => {
     const { data, error } = await supabase
         .from('products')
@@ -27,8 +29,9 @@ export const getAllProducts = async () => {
     }
 
     return data;
-}
+};
 
+// Fetch a single product by ID
 export const getProduct = async (id) => {
     const { data, error } = await supabase
         .from('products')
@@ -42,8 +45,9 @@ export const getProduct = async (id) => {
     }
 
     return data;
-}
+};
 
+// Fetch a user by ID
 export const getUser = async (id) => {
     const { data, error } = await supabase
         .from('users')
@@ -57,4 +61,19 @@ export const getUser = async (id) => {
     }
 
     return data;
-}
+};
+
+// Fetch user logs
+export const fetchUserLogs = async () => {
+    const { data, error } = await supabase
+        .from('user_logs') // Replace with the actual name of your logs table
+        .select('*')
+        .order('timestamp', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching user logs:', error);
+        return [];
+    }
+
+    return data;
+};
