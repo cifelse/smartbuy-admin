@@ -1,51 +1,49 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+// import { Icons } from "@/components/ui/icons"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import NavBar from '@/components/NavBar'
-import { fetchUserLogs } from '@/lib/supabase'
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [logs, setLogs] = useState<any[]>([]) // State to store fetched logs
   const router = useRouter()
 
-  // Simulate login (placeholder for actual login logic)
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault()
-    setIsLoading(true)
+async function onSubmit(event: React.SyntheticEvent) {
+  event.preventDefault();
+  setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false)
-      router.push('/')
-    }, 3000)
+  try {
+    // Simulate login process
+    setTimeout(async () => {
+      setIsLoading(false);
+      // Log user action
+      await fetch('/api/logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: 'mockUserId123', // Replace with actual user ID from auth context
+          action: 'user_logged_in',
+          details: { username: 'johndoe' }, // Replace with actual username
+        }),
+      });
+      router.push('/');
+    }, 3000);
+  } catch (error) {
+    console.error('Login failed:', error);
   }
+}
 
-  // Fetch logs on component mount
-  useEffect(() => {
-    async function getLogs() {
-      try {
-        const fetchedLogs = await fetchUserLogs()
-        setLogs(fetchedLogs || [])
-      } catch (error) {
-        console.error('Error fetching logs:', error)
-      }
-    }
-    getLogs()
-  }, [])
 
   return (
     <>
       <div className="container flex h-screen w-screen flex-col items-center justify-center">
-        {/* Navigation Bar */}
         <NavBar isMobile={false} hideButton />
-
-        {/* Login Card */}
         <Card className="w-[380px]">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl">Sign in</CardTitle>
@@ -65,7 +63,11 @@ export default function Login() {
                 <Input id="password" type="password" />
               </div>
               <Button className="w-full mt-4" type="submit" disabled={isLoading}>
-                {isLoading ? 'Loading...' : 'Sign In'}
+                {isLoading && (
+                  // <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                  true
+                )}
+                Sign In
               </Button>
             </form>
 
@@ -84,37 +86,6 @@ export default function Login() {
               </Link>
             </p>
           </CardFooter>
-        </Card>
-
-        {/* User Logs Section */}
-        <Card className="w-full mt-8 p-4">
-          <CardHeader>
-            <CardTitle>User Logs</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {logs.length > 0 ? (
-              <table className="table-auto w-full border-collapse border border-gray-300">
-                <thead>
-                  <tr>
-                    <th className="border border-gray-300 px-4 py-2">Timestamp</th>
-                    <th className="border border-gray-300 px-4 py-2">User</th>
-                    <th className="border border-gray-300 px-4 py-2">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {logs.map((log, index) => (
-                    <tr key={index}>
-                      <td className="border border-gray-300 px-4 py-2">{log.timestamp}</td>
-                      <td className="border border-gray-300 px-4 py-2">{log.user_id || 'Unknown'}</td>
-                      <td className="border border-gray-300 px-4 py-2">{log.action}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p>No logs available.</p>
-            )}
-          </CardContent>
         </Card>
       </div>
     </>
