@@ -13,7 +13,20 @@ type Product = {
   images: string[];
 };
 
+const logAction = async (userId: string, action: string, details: object = {}) => {
+  try {
+    await fetch('/api/logs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, action, details }),
+    });
+  } catch (error) {
+    console.error('Error logging action:', error);
+  }
+};
+
 export default function ProductCard({ product }: { product: Product }) {
+  const handleViewProductDetails = async () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -37,7 +50,8 @@ export default function ProductCard({ product }: { product: Product }) {
       if (e.key === 'ArrowRight') nextImage();
     }
   }, [prevImage, nextImage, hasMultipleImages]);
-
+  await logAction('mockUserId123', 'viewed_product', { productId: product.id, productName: product.name });
+  };
   return (
     <div 
       className="group"
