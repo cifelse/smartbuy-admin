@@ -63,14 +63,14 @@ export const getUser = async (id) => {
 };
 
 // Save a log entry to the logs table
-export const saveLog = async (userId, action, details = {}) => {
-  const { data, error } = await supabase.from("logs").insert([
-    {
+export const insertLog = async (userId, action, details = {}) => {
+  const { data, error } = await supabase
+    .from("logs")
+    .insert({
       user_id: userId,
       action,
       details,
-    },
-  ]);
+    });
 
   if (error) {
     console.error("Error saving log", error.message);

@@ -8,42 +8,40 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 // import { Icons } from "@/components/ui/icons"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import NavBar from '@/components/NavBar'
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const router = useRouter()
 
-async function onSubmit(event: React.SyntheticEvent) {
-  event.preventDefault();
-  setIsLoading(true);
+  async function onSubmit(event: React.SyntheticEvent) {
+    // event.preventDefault();
+    // setIsLoading(true);
 
-  try {
-    // Simulate login process
-    setTimeout(async () => {
-      setIsLoading(false);
-      // Log user action
-      await fetch('/api/logs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: 'mockUserId123', // Replace with actual user ID from auth context
-          action: 'user_logged_in',
-          details: { username: 'johndoe' }, // Replace with actual username
-        }),
-      });
-      router.push('/');
-    }, 3000);
-  } catch (error) {
-    console.error('Login failed:', error);
+    // try {
+    //   // Simulate login process
+    //   setTimeout(async () => {
+    //     setIsLoading(false);
+    //     // Log user action
+    //     await fetch('/api/logs', {
+    //       method: 'POST',
+    //       headers: { 'Content-Type': 'application/json' },
+    //       body: JSON.stringify({
+    //         userId: 'mockUserId123', // Replace with actual user ID from auth context
+    //         action: 'user_logged_in',
+    //         details: { username: 'johndoe' }, // Replace with actual username
+    //       }),
+    //     });
+    //     router.push('/');
+    //   }, 3000);
+    // } catch (error) {
+    //   console.error('Login failed:', error);
+    // }
   }
-}
 
 
   return (
     <>
       <div className="container flex h-screen w-screen flex-col items-center justify-center">
-        <NavBar isMobile={false} hideButton />
         <Card className="w-[380px]">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl">Sign in</CardTitle>
