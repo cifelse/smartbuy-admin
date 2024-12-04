@@ -46,7 +46,6 @@ yarn-error.log*
 next-env.d.ts
 
 # Logs
-logs
 *.log
 
 # Diagnostic reports
