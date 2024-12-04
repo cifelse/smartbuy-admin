@@ -1,13 +1,18 @@
-import { createClient } from "@supabase/supabase-js";
+"use server";
 
-// Create a single supabase client for interacting with your database
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY
-);
+import { createBrowserClient } from "@supabase/ssr";
+
+export const createClient = async () => {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
 
 // Fetch all categories
 export const getAllCategories = async () => {
+  const supabase = await createClient();
+
   const { data, error } = await supabase.from("categories").select("*");
 
   if (error) {
@@ -16,11 +21,13 @@ export const getAllCategories = async () => {
   }
 
   return data;
-};
+}
 
 // Fetch all products
-export const getAllProducts = async () => {
-  const { data, error } = await supabase.from("products").select("*");
+export const getAllProducts = async (limit: number) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.from("products").select("*").limit(limit);
 
   if (error) {
     console.error("Error fetching products", error);
@@ -28,10 +35,12 @@ export const getAllProducts = async () => {
   }
 
   return data;
-};
+}
 
 // Fetch a single product by ID
-export const getProduct = async (id) => {
+export const getProduct = async (id: string) => {
+  const supabase = await createClient();
+
   const { data, error } = await supabase
     .from("products")
     .select("*")
@@ -44,13 +53,15 @@ export const getProduct = async (id) => {
   }
 
   return data;
-};
+}
 
 // Fetch user information by ID
-export const getUser = async (id) => {
+export const getUserInfo = async (id: string): Promise<{ name: string; email: string; avatar: string; } | null> => {
+  const supabase = await createClient();
+
   const { data, error } = await supabase
     .from("users")
-    .select("first_name, last_name, pfp")
+    .select("first_name, last_name, pfp, email")
     .eq("id", id)
     .maybeSingle();
 
@@ -59,11 +70,17 @@ export const getUser = async (id) => {
     return null;
   }
 
-  return data;
-};
+  return {
+    name: `${data?.first_name} ${data?.last_name}`,
+    email: data?.email,
+    avatar: data?.pfp,
+  };
+}
 
 // Save a log entry to the logs table
-export const insertLog = async (userId, action, details = {}) => {
+export const insertLog = async (userId: string, action: string, details = {}) => {
+  const supabase = await createClient();
+
   const { data, error } = await supabase
     .from("logs")
     .insert({
@@ -78,4 +95,4 @@ export const insertLog = async (userId, action, details = {}) => {
   }
 
   return data;
-};
+}
