@@ -70,3 +70,19 @@ export const isAdmin = async (email: string) => {
 
   return data?.tier === 3;
 }
+
+export const isProductManager = async (email: string) => {
+  const supabase = await createSerClient();
+  const { data, error } = await supabase
+    .from("users")
+    .select("tier")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error fetching admin", error);
+    return false;
+  }
+
+  return data?.tier === 2;
+}
