@@ -3,7 +3,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-export const createClient = async () => {
+export const createSerClient = async () => {
   const cookieStore = await cookies();
 
   return createServerClient(
@@ -31,7 +31,7 @@ export const createClient = async () => {
 }
 
 export const login = async (email: string, password: string) => {
-  const supabase = await createClient();
+  const supabase = await createSerClient();
   
   return await supabase.auth.signInWithPassword({
     email,
@@ -40,7 +40,7 @@ export const login = async (email: string, password: string) => {
 }
 
 export const logout = async () => {
-  const supabase = await createClient();
+  const supabase = await createSerClient();
   const { error } = await supabase.auth.signOut();
 
   // Manually delete authentication-related cookies
@@ -50,7 +50,23 @@ export const logout = async () => {
 }
 
 export const getCurrentUser = async () => {
-  const supabase = await createClient();
+  const supabase = await createSerClient();
   
   return await supabase.auth.getUser();
+}
+
+export const isAdmin = async (email: string) => {
+  const supabase = await createSerClient();
+  const { data, error } = await supabase
+    .from("users")
+    .select("tier")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error fetching admin", error);
+    return false;
+  }
+
+  return data?.tier === 3;
 }

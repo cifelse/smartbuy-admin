@@ -1,6 +1,7 @@
 "use server";
 
-import { createBrowserClient } from "@supabase/ssr";
+import { createBrowserClient, createServerClient } from "@supabase/ssr";
+import { createSerClient } from "./server";
 
 export const createClient = async () => {
   return createBrowserClient(
@@ -75,6 +76,19 @@ export const getUserInfo = async (id: string): Promise<{ name: string; email: st
     email: data?.email,
     avatar: data?.pfp,
   };
+}
+
+export const getMyInfo = async () => {
+    const supabase = await createSerClient();
+    
+    const { data, error } = await supabase.auth.getUser();
+    
+    if (error) {
+        console.error("Error fetching user", error);
+        return null;
+    }
+
+    return await getUserInfo(data?.user.id);
 }
 
 // Save a log entry to the logs table
